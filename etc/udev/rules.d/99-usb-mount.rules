@@ -1,0 +1,1 @@
+ACTION=="add", KERNEL=="sd[b-z][0-9]*", SUBSYSTEM=="block", RUN+="/usr/local/bin/drives_mount.sh %k"

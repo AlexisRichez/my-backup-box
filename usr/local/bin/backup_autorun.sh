@@ -1,6 +1,11 @@
 #!/bin/bash
 source config.sh
 
+clear
+
+# Get the mount points from the command-line arguments
+sd_mount_points=("$@")
+
 # Source and target directories
 source_dir="/mnt/source/"
 target_dir="/mnt/target/"
@@ -14,6 +19,16 @@ exec > >(tee -a "$log_file") 2>&1
 
 # Function to perform the incremental backup using rsync
 perform_backup() {
+    # Get the mount point from the function argument
+    #mount_point="$1"
+    source_dir="$mount_point/"
+    target_dir="/mnt/target/"
+
+    mkdir -p $target_dir
+
+    echo "-> Source directory: $source_dir"
+    echo "-> Target directory: $target_dir"
+
     # Check if source and target directories exist
     if [ ! -d "$source_dir" ]; then
         echo "Source directory $source_dir does not exist."
@@ -24,35 +39,45 @@ perform_backup() {
         return 1
     fi
 
-    # Check if there are changes between source and target directories
-    changes=$(rsync -avn --delete --exclude='.git' "$source_dir" "$target_dir" | grep -E '^[<>c.]')
-    if [ -n "$changes" ]; then
-        if rsync -avh --delete --exclude='.git' --info=progress2 "$source_dir" "$target_dir" 2>&1 | tee -a "$log_file"; then
-            message="Backup successful :)"
-        else
-            message="Backup failed :("
-        fi
+    if rsync -avh --delete --exclude='.git' --info=progress2 "$source_dir" "$target_dir" 2>&1
+    then
+        message="Rsync backup completed successfully :)"
     else
-        message="No files to backup !"
+        message="Rsync backup failed :("
     fi
-
+        
     # Display and log message
-    echo "$message" | tee -a "$log_file"
+    echo "$message"
     #/opt/venv/bin/python3 /usr/local/bin/screen_display.py "$message"
 }
 
 # Display script information
-echo "================================================================" | tee -a "$log_file"
-echo "My Backup Box by ARZ" | tee -a "$log_file"
-echo "================================================================" | tee -a "$log_file"
-echo "Version : $conf_version" | tee -a "$log_file"
-echo "================================================================" | tee -a "$log_file"
-echo "Starting auto incremental backup..." | tee -a "$log_file"
-echo "-> Source directory: $source_dir" | tee -a "$log_file"
-echo "-> Target directory: $target_dir" | tee -a "$log_file"
-echo "Log file: $log_file" | tee -a "$log_file"
+echo '=============================================================================='
+echo ''
+echo '  __  __         ____             _                  ____        '    
+echo ' |  \/  |       |  _ \           | |                |  _ \           '
+echo ' | \  / |_   _  | |_) | __ _  ___| | ___   _ _ __   | |_) | _____  __'
+echo ' | |\/| | | | | |  _ < / _` |/ __| |/ / | | | '\''_ \  |  _ < / _ \ \/ /'
+echo ' | |  | | |_| | | |_) | (_| | (__|   <| |_| | |_) | | |_) | (_) >  < '
+echo ' |_|  |_|\__, | |____/ \__,_|\___|_|\_\\__,_| .__/  |____/ \___/_/\_\'
+echo '          __/ |                             | |                      '
+echo '         |___/                              |_|                      '
+echo ''
+echo '=============================================================================='
+echo "Version : $conf_version"
+echo '=============================================================================='
+echo "Log file: $log_file"
+echo "Starting auto incremental backup..."
+
+# Display the contents of the sd_mount_points variable
+echo "Mount points: $sd_mount_points"
 
 # Perform the incremental backup
-perform_backup
+for mount_point in "${sd_mount_points[@]}"; do
+    # Perform backup operation for each SD card
+    # Replace this with your actual backup command
+    echo "Performing backup for SD card at $mount_point..."
+    perform_backup "$mount_point"
+done
 
-echo "Finished auto incremental backup." | tee -a "$log_file"
+echo "Finished auto incremental backup."

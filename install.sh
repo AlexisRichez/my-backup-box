@@ -27,15 +27,15 @@ case $response in
     chmod 644 /etc/udev/rules.d/99-usb-mount.rules
 
     echo "Creating log directory..."
-    mkdir /var/log/my-backup-box/
+    mkdir -p /var/log/my-backup-box/
 
     chmod +x /usr/local/bin/drives_mount.sh
     chmod +x /usr/local/bin/screen_display.py
 
-    echo "Setting autorun backup on boot..."
-  
-    SCRIPT_PATH="/usr/local/bin/backup_autorun.sh /mnt/source"
+    echo "Setting autorun backup on boot..."  
+    SCRIPT_PATH="/usr/local/bin/backup_autorun.sh"
     (crontab -l 2>/dev/null; echo "@reboot $SCRIPT_PATH") | crontab -
+
     echo "Installation completed."
     ;;
   1) 

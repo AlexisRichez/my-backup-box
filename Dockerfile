@@ -9,8 +9,10 @@ RUN apt-get update && apt-get install -y \
 
 # Create two directories to simulate two drives
 RUN mkdir /mnt/source /mnt/target
+RUN mkdir /mnt/source/550e8400-e29b-41d4-a716-446655440000
+RUN mkdir /mnt/source/f47ac10b-58cc-4372-a567-0e02b2c3d479
 
-# Specify that /drive1 and /drive2 should be created as mount points
+# Specify that /mnt/source and /mnt/target should be created as mount points
 VOLUME [ "/mnt/source", "/mnt/target" ]
 
 # Set the working directory in the Docker image

@@ -26,9 +26,9 @@ To use the project, connect a source drive and a target drive to the Raspberry P
 
 ## Docker
 
-A Dockerfile is provided for running the project in a Docker container. To build the Docker image, use the command `docker build -t my-backup-box .`. 
+A Dockerfile is provided for running the project in a Docker container. To build the Docker image, use the command `docker build -t my-backup-box . --no-cache`. 
 
-To run the Docker container, use the command `docker run -v my-backup-box`.
+To run the Docker container, use the command `docker run -it --rm my-backup-box /bin/bash`.
 
 ## Logging
 
